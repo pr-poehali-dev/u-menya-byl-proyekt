@@ -16,30 +16,38 @@ const services = [
   { icon: "Package", title: "Ресурс-паки и шейдеры", desc: "Полноценные ресурс-паки и шейдеры, меняющие визуал игры до неузнаваемости" },
 ];
 
-const portfolio = [
-  { label: "Скин «Лесной дух»", tag: "Скины", color: "from-emerald-400 to-teal-600", emoji: "🌿" },
-  { label: "3D Тотем «Феникс»", tag: "Тотемы", color: "from-orange-400 to-rose-500", emoji: "🔥" },
-  { label: "Карта «Джунгли»", tag: "Карты", color: "from-lime-400 to-emerald-600", emoji: "🗺️" },
-  { label: "Превью для канала", tag: "Превью", color: "from-sky-400 to-blue-600", emoji: "🎬" },
-  { label: "Ресурс-пак «Тропики»", tag: "Ресурс-паки", color: "from-teal-400 to-cyan-600", emoji: "📦" },
-  { label: "Монтаж клипа", tag: "Видео", color: "from-violet-400 to-purple-600", emoji: "🎞️" },
-];
-
 const navLinks = [
   { label: "Главная", href: "#hero" },
   { label: "Направления", href: "#services" },
-  { label: "Портфолио", href: "#portfolio" },
   { label: "Вступить", href: "#contacts" },
 ];
+
+const API_URL = "https://functions.poehali.dev/a6c881a7-4380-4053-8a23-5d5705ffd530";
 
 const Index = () => {
   const [form, setForm] = useState({ name: "", contact: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Ошибка отправки");
+      setSent(true);
+    } catch {
+      setError("Не удалось отправить заявку. Попробуй ещё раз.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const scrollTo = (id: string) => {
@@ -199,47 +207,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* PORTFOLIO */}
-      <section id="portfolio" className="py-24 px-6 bg-[#1a3028]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-teal-400 font-semibold text-sm uppercase tracking-widest">Наши работы</span>
-            <h2
-              className="text-4xl md:text-5xl font-black text-white mt-2"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              ПОРТФОЛИО
-            </h2>
-            <p className="text-teal-200/70 mt-3 text-base max-w-lg mx-auto">
-              Примеры работ — скоро здесь появятся реальные проекты
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {portfolio.map((p, i) => (
-              <div
-                key={i}
-                className="group relative rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 aspect-video"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${p.color} opacity-80`} />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                  <span className="text-5xl mb-3">{p.emoji}</span>
-                  <span className="font-bold text-lg text-center px-4" style={{ fontFamily: "'Oswald', sans-serif" }}>
-                    {p.label}
-                  </span>
-                  <span className="mt-2 text-xs bg-white/20 px-3 py-1 rounded-full">{p.tag}</span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent" />
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-teal-300/50 text-sm mt-10">
-            Портфолио пополняется — напишите нам, чтобы узнать о наличии примеров в нужной категории
-          </p>
-        </div>
-      </section>
-
       {/* CONTACTS */}
       <section id="contacts" className="py-24 px-6 bg-[#f5f0e8]">
         <div className="max-w-4xl mx-auto">
@@ -273,7 +240,7 @@ const Index = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Discord / Telegram / VK</label>
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Telegram / Макс</label>
                     <input
                       type="text"
                       required
@@ -294,11 +261,15 @@ const Index = () => {
                       className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7] resize-none"
                     />
                   </div>
+                  {error && (
+                    <p className="text-red-500 text-sm text-center">{error}</p>
+                  )}
                   <button
                     type="submit"
-                    className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-4 rounded-xl text-base transition-all hover:shadow-lg hover:scale-[1.02]"
+                    disabled={loading}
+                    className="bg-teal-700 hover:bg-teal-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl text-base transition-all hover:shadow-lg hover:scale-[1.02]"
                   >
-                    Подать заявку
+                    {loading ? "Отправляем..." : "Подать заявку"}
                   </button>
                 </form>
               ) : (
@@ -325,9 +296,9 @@ const Index = () => {
                   <div className="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center">
                     <Icon name="MessageCircle" size={20} className="text-teal-700" />
                   </div>
-                  <span className="font-bold text-[#1a3028]" style={{ fontFamily: "'Oswald', sans-serif" }}>Discord</span>
+                  <span className="font-bold text-[#1a3028]" style={{ fontFamily: "'Oswald', sans-serif" }}>Макс / Telegram</span>
                 </div>
-                <p className="text-sm text-[#5a7a6a]">Напишите нам в Discord — там мы отвечаем быстрее всего</p>
+                <p className="text-sm text-[#5a7a6a]">Укажи свой ник в Макс или Telegram — мы напишем тебе после рассмотрения заявки</p>
               </div>
               <div className="bg-white rounded-2xl p-6 border border-[#ddd4c0]">
                 <div className="flex items-center gap-3 mb-2">
