@@ -229,7 +229,7 @@ const Index = () => {
               {!sent ? (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                   <div>
-                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Имя / Ник</label>
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Имя</label>
                     <input
                       type="text"
                       required
