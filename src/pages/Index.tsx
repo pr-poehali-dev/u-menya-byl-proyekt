@@ -5,14 +5,14 @@ const AVATAR_URL =
   "https://cdn.poehali.dev/projects/3e9d6252-f055-4953-8e3e-e9bfaebdc990/bucket/540b7473-3ed4-47c3-8fd7-3a3ef2899ab1.jpeg";
 
 const services = [
-  { icon: "User", title: "Скины", desc: "Рисуем и решейдим скины в Blender — уникальный облик для твоего персонажа" },
-  { icon: "Layers", title: "Тотемы", desc: "2D и 3D тотемы в Blender — детализированные, яркие, запоминающиеся" },
-  { icon: "Share2", title: "Оформление соц. сетей", desc: "Баннеры, аватарки и шаблоны постов в едином стиле для твоего канала" },
+  { icon: "User", title: "Скины", desc: "Рисуем и решейдим скины — уникальный облик для персонажа с проработкой каждой детали" },
+  { icon: "Layers", title: "Тотемы", desc: "2D и 3D тотемы — детализированные, яркие, с характером" },
+  { icon: "Share2", title: "Оформление соц. сетей", desc: "Баннеры, аватарки и шаблоны постов в едином стиле для канала или сервера" },
   { icon: "Monitor", title: "Обои для рабочего стола", desc: "Эксклюзивные обои в стиле Minecraft под любой вкус и разрешение" },
   { icon: "Video", title: "Монтаж видео", desc: "Профессиональный монтаж роликов для YouTube, TikTok и других платформ" },
   { icon: "Image", title: "Превью", desc: "Кликабельные превью для видео, которые увеличивают просмотры" },
   { icon: "Map", title: "Карты", desc: "Создаём уникальные игровые карты — от мини-игр до приключенческих миров" },
-  { icon: "Play", title: "Анимации", desc: "Плавные анимации персонажей и объектов для твоих роликов и проектов" },
+  { icon: "Play", title: "Анимации", desc: "Плавные анимации персонажей и объектов для роликов и проектов в Blender" },
   { icon: "Package", title: "Ресурс-паки и шейдеры", desc: "Полноценные ресурс-паки и шейдеры, меняющие визуал игры до неузнаваемости" },
 ];
 
@@ -27,9 +27,9 @@ const portfolio = [
 
 const navLinks = [
   { label: "Главная", href: "#hero" },
-  { label: "Услуги", href: "#services" },
+  { label: "Направления", href: "#services" },
   { label: "Портфолио", href: "#portfolio" },
-  { label: "Контакты", href: "#contacts" },
+  { label: "Вступить", href: "#contacts" },
 ];
 
 const Index = () => {
@@ -79,7 +79,7 @@ const Index = () => {
               onClick={() => scrollTo("#contacts")}
               className="bg-teal-700 text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-teal-600 transition-colors"
             >
-              Связаться
+              Вступить в команду
             </button>
           </div>
 
@@ -134,24 +134,24 @@ const Index = () => {
             ОАЗИС
           </h1>
           <p className="text-lg md:text-xl text-white/90 mb-3 animate-fade-in-up delay-100 font-medium">
-            Minecraft-студия полного цикла
+            Minecraft-студия ищет таланты в команду
           </p>
           <p className="text-base text-white/75 mb-10 animate-fade-in-up delay-200 max-w-xl mx-auto leading-relaxed">
-            Создаём скины, тотемы, карты, ресурс-паки, шейдеры, анимации и контент для твоего проекта — всё в Blender и с душой.
+            Мы создаём скины, тотемы, карты, ресурс-паки, анимации и контент. Если ты умеешь делать что-то из этого — нам нужен такой человек.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-300">
             <button
-              onClick={() => scrollTo("#services")}
+              onClick={() => scrollTo("#contacts")}
               className="bg-teal-600 hover:bg-teal-500 text-white font-bold px-8 py-4 rounded-full text-base transition-all hover:scale-105 shadow-lg"
             >
-              Наши услуги
+              Вступить в команду
             </button>
             <button
-              onClick={() => scrollTo("#contacts")}
+              onClick={() => scrollTo("#services")}
               className="bg-white/15 hover:bg-white/25 text-white font-bold px-8 py-4 rounded-full text-base border border-white/40 transition-all hover:scale-105 backdrop-blur-sm"
             >
-              Написать нам
+              Чем мы занимаемся
             </button>
           </div>
         </div>
@@ -165,15 +165,15 @@ const Index = () => {
       <section id="services" className="py-24 px-6 bg-[#f5f0e8]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <span className="text-teal-600 font-semibold text-sm uppercase tracking-widest">Что мы делаем</span>
+            <span className="text-teal-600 font-semibold text-sm uppercase tracking-widest">Кто нам нужен</span>
             <h2
               className="text-4xl md:text-5xl font-black text-[#1a3028] mt-2"
               style={{ fontFamily: "'Oswald', sans-serif" }}
             >
-              УСЛУГИ
+              НАПРАВЛЕНИЯ
             </h2>
             <p className="text-[#4a7a62] mt-3 text-base max-w-lg mx-auto">
-              Полный спектр Minecraft-контента — от персонажей до целых миров
+              Ищем людей по каждому из этих направлений — одному или нескольким сразу
             </p>
           </div>
 
@@ -244,15 +244,15 @@ const Index = () => {
       <section id="contacts" className="py-24 px-6 bg-[#f5f0e8]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <span className="text-teal-600 font-semibold text-sm uppercase tracking-widest">Напишите нам</span>
+            <span className="text-teal-600 font-semibold text-sm uppercase tracking-widest">Хочешь к нам?</span>
             <h2
               className="text-4xl md:text-5xl font-black text-[#1a3028] mt-2"
               style={{ fontFamily: "'Oswald', sans-serif" }}
             >
-              КОНТАКТЫ
+              ВСТУПИТЬ В КОМАНДУ
             </h2>
             <p className="text-[#4a7a62] mt-3 text-base max-w-md mx-auto">
-              Расскажите о своём проекте — обсудим детали и стоимость
+              Расскажи о себе и своих навыках — мы рассмотрим заявку и свяжемся с тобой
             </p>
           </div>
 
@@ -284,11 +284,11 @@ const Index = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Что нужно сделать?</label>
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Чем ты занимаешься?</label>
                     <textarea
                       required
                       rows={4}
-                      placeholder="Хочу скин лесного духа с анимацией плаща..."
+                      placeholder="Умею рисовать скины, решейдить, делаю превью и баннеры..."
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7] resize-none"
@@ -298,7 +298,7 @@ const Index = () => {
                     type="submit"
                     className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-4 rounded-xl text-base transition-all hover:shadow-lg hover:scale-[1.02]"
                   >
-                    Отправить заявку
+                    Подать заявку
                   </button>
                 </form>
               ) : (
@@ -307,7 +307,7 @@ const Index = () => {
                   <h3 className="text-2xl font-bold text-[#1a3028] mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
                     Заявка отправлена!
                   </h3>
-                  <p className="text-[#4a7a62] text-sm">Мы свяжемся с вами в ближайшее время.</p>
+                  <p className="text-[#4a7a62] text-sm">Мы рассмотрим её и свяжемся с тобой в ближайшее время.</p>
                   <button
                     onClick={() => { setSent(false); setForm({ name: "", contact: "", message: "" }); }}
                     className="mt-6 text-teal-600 text-sm hover:underline"
@@ -344,7 +344,7 @@ const Index = () => {
                   <span className="font-bold text-white" style={{ fontFamily: "'Oswald', sans-serif" }}>ОАЗИС</span>
                 </div>
                 <p className="text-teal-200/80 text-sm leading-relaxed">
-                  Мы — небольшая студия с большой любовью к Minecraft. Каждый проект делаем в Blender с вниманием к деталям.
+                  Мы — небольшая команда с большой любовью к Minecraft. Ищем людей, которые горят тем же и хотят создавать крутые вещи вместе.
                 </p>
               </div>
             </div>
