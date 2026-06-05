@@ -233,7 +233,7 @@ const Index = () => {
                     <input
                       type="text"
                       required
-                      placeholder="Herobrine228"
+                      placeholder="Иван"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
