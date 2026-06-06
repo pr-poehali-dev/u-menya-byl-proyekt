@@ -18,11 +18,13 @@ def handler(event: dict, context) -> dict:
             'body': ''
         }
 
-    body = json.loads(event.get('body', '{}'))
+    raw_body = event.get('body') or '{}'
+    body = json.loads(raw_body)
     name = body.get('name', '').strip()
     max_link = body.get('max', '').strip()
     telegram = body.get('telegram', '').strip()
     message = body.get('message', '').strip()
+    file_urls = body.get('file_urls', [])
 
     if not name or not message or (not max_link and not telegram):
         return {
@@ -40,11 +42,17 @@ def handler(event: dict, context) -> dict:
     if telegram:
         contacts.append(f"✈️ Telegram: {telegram}")
 
+    files_section = ""
+    if file_urls:
+        links = "\n".join(f"• {url}" for url in file_urls)
+        files_section = f"\n📎 *Примеры работ:*\n{links}"
+
     text = (
         f"🌴 *Новая заявка в команду Оазис*\n\n"
         f"👤 *Имя:* {name}\n"
         + "\n".join(contacts) +
         f"\n🎨 *Навыки:*\n{message}"
+        + files_section
     )
 
     payload = json.dumps({

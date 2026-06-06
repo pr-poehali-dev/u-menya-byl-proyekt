@@ -23,6 +23,14 @@ const navLinks = [
 ];
 
 const API_URL = "https://functions.poehali.dev/a6c881a7-4380-4053-8a23-5d5705ffd530";
+const UPLOAD_URL = "https://functions.poehali.dev/e6f2c97b-ef6e-4580-9ece-ccbb1b17159b";
+const MAX_FILES = 5;
+
+interface UploadedFile {
+  name: string;
+  url: string;
+  preview?: string;
+}
 
 const Index = () => {
   const [form, setForm] = useState({ name: "", max: "", telegram: "", message: "" });
@@ -31,6 +39,49 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files || []);
+    if (!selected.length) return;
+    if (files.length + selected.length > MAX_FILES) {
+      setError(`Можно прикрепить не более ${MAX_FILES} файлов`);
+      return;
+    }
+    setUploading(true);
+    setError("");
+    try {
+      const uploaded: UploadedFile[] = [];
+      for (const file of selected) {
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve((reader.result as string).split(",")[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const res = await fetch(UPLOAD_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ file: base64, content_type: file.type }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Ошибка загрузки");
+        const preview = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+        uploaded.push({ name: file.name, url: data.url, preview });
+      }
+      setFiles((prev) => [...prev, ...uploaded]);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Не удалось загрузить файл");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const removeFile = (idx: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +91,13 @@ const Index = () => {
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, max: form.max, telegram: form.telegram, message: form.message }),
+        body: JSON.stringify({
+          name: form.name,
+          max: form.max,
+          telegram: form.telegram,
+          message: form.message,
+          file_urls: files.map((f) => f.url),
+        }),
       });
       if (!res.ok) throw new Error("Ошибка отправки");
       setSent(true);
@@ -285,12 +342,59 @@ const Index = () => {
                       className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7] resize-none"
                     />
                   </div>
+
+                  {/* Примеры работ */}
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">
+                      Примеры работ <span className="font-normal text-[#7a9a8a]">(необязательно, до {MAX_FILES} файлов)</span>
+                    </label>
+                    {files.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {files.map((f, idx) => (
+                          <div key={idx} className="relative group">
+                            {f.preview ? (
+                              <img
+                                src={f.preview}
+                                alt={f.name}
+                                className="w-20 h-20 object-cover rounded-xl border border-[#d4c9b0]"
+                              />
+                            ) : (
+                              <div className="w-20 h-20 flex items-center justify-center rounded-xl border border-[#d4c9b0] bg-[#f0ece2] text-[#4a7a62]">
+                                <Icon name="FileVideo" size={28} />
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => removeFile(idx)}
+                              className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Icon name="X" size={12} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {files.length < MAX_FILES && (
+                      <label className={`flex items-center gap-2 cursor-pointer w-full border-2 border-dashed border-[#d4c9b0] hover:border-teal-400 rounded-xl px-4 py-3 text-sm text-[#7a9a8a] hover:text-teal-600 transition-all bg-[#fafaf7] ${uploading ? "opacity-60 pointer-events-none" : ""}`}>
+                        <Icon name={uploading ? "Loader" : "Paperclip"} size={16} className={uploading ? "animate-spin" : ""} />
+                        {uploading ? "Загружаем..." : "Прикрепить изображения или видео"}
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
                   {error && (
                     <p className="text-red-500 text-sm text-center">{error}</p>
                   )}
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || uploading}
                     className="bg-teal-700 hover:bg-teal-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl text-base transition-all hover:shadow-lg hover:scale-[1.02]"
                   >
                     {loading ? "Отправляем..." : "Подать заявку"}
@@ -304,7 +408,7 @@ const Index = () => {
                   </h3>
                   <p className="text-[#4a7a62] text-sm">Мы рассмотрим её и свяжемся с тобой в ближайшее время.</p>
                   <button
-                    onClick={() => { setSent(false); setForm({ name: "", max: "", telegram: "", message: "" }); }}
+                    onClick={() => { setSent(false); setForm({ name: "", max: "", telegram: "", message: "" }); setFiles([]); }}
                     className="mt-6 text-teal-600 text-sm hover:underline"
                   >
                     Отправить ещё одну заявку
