@@ -45,20 +45,19 @@ def handler(event: dict, context) -> dict:
     files_section = ""
     if file_urls:
         links = "\n".join(f"• {url}" for url in file_urls)
-        files_section = f"\n📎 *Примеры работ:*\n{links}"
+        files_section = f"\n📎 Примеры работ:\n{links}"
 
     text = (
-        f"🌴 *Новая заявка в команду Оазис*\n\n"
-        f"👤 *Имя:* {name}\n"
+        f"🌴 Новая заявка в команду Оазис\n\n"
+        f"👤 Имя: {name}\n"
         + "\n".join(contacts) +
-        f"\n🎨 *Навыки:*\n{message}"
+        f"\n🎨 Навыки:\n{message}"
         + files_section
     )
 
     payload = json.dumps({
         'chat_id': chat_id,
         'text': text,
-        'parse_mode': 'Markdown'
     }).encode()
 
     req = urllib.request.Request(
@@ -67,7 +66,7 @@ def handler(event: dict, context) -> dict:
         headers={'Content-Type': 'application/json'},
         method='POST'
     )
-    with urllib.request.urlopen(req) as resp:
+    with urllib.request.urlopen(req, timeout=10) as resp:
         resp.read()
 
     return {
