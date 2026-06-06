@@ -26,6 +26,7 @@ const API_URL = "https://functions.poehali.dev/a6c881a7-4380-4053-8a23-5d5705ffd
 
 const Index = () => {
   const [form, setForm] = useState({ name: "", max: "", telegram: "", message: "" });
+  const [contactType, setContactType] = useState<"telegram" | "max">("telegram");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -240,24 +241,38 @@ const Index = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Ссылка на Макс</label>
-                    <input
-                      type="url"
-                      placeholder="https://max.ru/u/..."
-                      value={form.max}
-                      onChange={(e) => setForm({ ...form, max: e.target.value })}
-                      className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Telegram</label>
-                    <input
-                      type="text"
-                      placeholder="@username"
-                      value={form.telegram}
-                      onChange={(e) => setForm({ ...form, telegram: e.target.value })}
-                      className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
-                    />
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-2">Как с тобой связаться?</label>
+                    <div className="flex gap-2 mb-3">
+                      {(["telegram", "max"] as const).map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => { setContactType(type); setForm({ ...form, telegram: "", max: "" }); }}
+                          className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-all ${contactType === type ? "bg-teal-700 text-white border-teal-700" : "bg-[#fafaf7] text-[#1a3028] border-[#d4c9b0] hover:border-teal-400"}`}
+                        >
+                          {type === "telegram" ? "Telegram" : "Макс"}
+                        </button>
+                      ))}
+                    </div>
+                    {contactType === "telegram" ? (
+                      <input
+                        type="text"
+                        required
+                        placeholder="@username"
+                        value={form.telegram}
+                        onChange={(e) => setForm({ ...form, telegram: e.target.value })}
+                        className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
+                      />
+                    ) : (
+                      <input
+                        type="url"
+                        required
+                        placeholder="https://max.ru/u/..."
+                        value={form.max}
+                        onChange={(e) => setForm({ ...form, max: e.target.value })}
+                        className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
+                      />
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-[#1a3028] mb-1">Чем ты занимаешься?</label>
