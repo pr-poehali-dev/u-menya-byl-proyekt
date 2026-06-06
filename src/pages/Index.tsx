@@ -247,7 +247,7 @@ const Index = () => {
                         <button
                           key={type}
                           type="button"
-                          onClick={() => { setContactType(type); setForm({ ...form, telegram: "", max: "" }); }}
+                          onClick={() => setContactType(type)}
                           className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-all ${contactType === type ? "bg-teal-700 text-white border-teal-700" : "bg-[#fafaf7] text-[#1a3028] border-[#d4c9b0] hover:border-teal-400"}`}
                         >
                           {type === "telegram" ? "Telegram" : "Макс"}
