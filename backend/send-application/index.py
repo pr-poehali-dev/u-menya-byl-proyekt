@@ -20,10 +20,11 @@ def handler(event: dict, context) -> dict:
 
     body = json.loads(event.get('body', '{}'))
     name = body.get('name', '').strip()
-    contact = body.get('contact', '').strip()
+    max_link = body.get('max', '').strip()
+    telegram = body.get('telegram', '').strip()
     message = body.get('message', '').strip()
 
-    if not name or not contact or not message:
+    if not name or not message or (not max_link and not telegram):
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
@@ -33,11 +34,17 @@ def handler(event: dict, context) -> dict:
     token = os.environ['TELEGRAM_BOT_TOKEN']
     chat_id = '6391432309'
 
+    contacts = []
+    if max_link:
+        contacts.append(f"📱 Макс: {max_link}")
+    if telegram:
+        contacts.append(f"✈️ Telegram: {telegram}")
+
     text = (
         f"🌴 *Новая заявка в команду Оазис*\n\n"
         f"👤 *Имя:* {name}\n"
-        f"📩 *Контакт:* {contact}\n"
-        f"🎨 *Навыки:*\n{message}"
+        + "\n".join(contacts) +
+        f"\n🎨 *Навыки:*\n{message}"
     )
 
     payload = json.dumps({

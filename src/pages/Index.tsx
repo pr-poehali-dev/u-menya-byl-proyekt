@@ -25,7 +25,7 @@ const navLinks = [
 const API_URL = "https://functions.poehali.dev/a6c881a7-4380-4053-8a23-5d5705ffd530";
 
 const Index = () => {
-  const [form, setForm] = useState({ name: "", contact: "", message: "" });
+  const [form, setForm] = useState({ name: "", max: "", telegram: "", message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -39,7 +39,7 @@ const Index = () => {
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ name: form.name, max: form.max, telegram: form.telegram, message: form.message }),
       });
       if (!res.ok) throw new Error("Ошибка отправки");
       setSent(true);
@@ -240,13 +240,22 @@ const Index = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Telegram / Макс</label>
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Ссылка на Макс</label>
+                    <input
+                      type="url"
+                      placeholder="https://max.ru/u/..."
+                      value={form.max}
+                      onChange={(e) => setForm({ ...form, max: e.target.value })}
+                      className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1a3028] mb-1">Telegram</label>
                     <input
                       type="text"
-                      required
                       placeholder="@username"
-                      value={form.contact}
-                      onChange={(e) => setForm({ ...form, contact: e.target.value })}
+                      value={form.telegram}
+                      onChange={(e) => setForm({ ...form, telegram: e.target.value })}
                       className="w-full border border-[#d4c9b0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all bg-[#fafaf7]"
                     />
                   </div>
@@ -280,7 +289,7 @@ const Index = () => {
                   </h3>
                   <p className="text-[#4a7a62] text-sm">Мы рассмотрим её и свяжемся с тобой в ближайшее время.</p>
                   <button
-                    onClick={() => { setSent(false); setForm({ name: "", contact: "", message: "" }); }}
+                    onClick={() => { setSent(false); setForm({ name: "", max: "", telegram: "", message: "" }); }}
                     className="mt-6 text-teal-600 text-sm hover:underline"
                   >
                     Отправить ещё одну заявку
