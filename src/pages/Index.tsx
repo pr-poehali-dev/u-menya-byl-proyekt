@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
+
+const TRACK_URL = "https://functions.poehali.dev/59e4d9d0-e0d3-48ba-9684-19df489c75b4";
 
 const AVATAR_URL =
   "https://cdn.poehali.dev/projects/3e9d6252-f055-4953-8e3e-e9bfaebdc990/bucket/540b7473-3ed4-47c3-8fd7-3a3ef2899ab1.jpeg";
@@ -41,6 +43,14 @@ const Index = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    fetch(TRACK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page: "/", referrer: document.referrer }),
+    }).catch(() => {});
+  }, []);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);

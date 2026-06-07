@@ -1,6 +1,7 @@
 import json
 import os
 import urllib.request
+import psycopg2
 
 
 def handler(event: dict, context) -> dict:
@@ -68,6 +69,17 @@ def handler(event: dict, context) -> dict:
     )
     with urllib.request.urlopen(req, timeout=10) as resp:
         resp.read()
+
+    contact = telegram or max_link
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO applications (name, contact, message, has_files) VALUES (%s, %s, %s, %s)",
+        (name, contact, message, bool(file_urls))
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return {
         'statusCode': 200,
